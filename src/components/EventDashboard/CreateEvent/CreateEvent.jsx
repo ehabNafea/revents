@@ -9,7 +9,13 @@ class CreateEvent extends Component {
         venue: '',
         hostedBy: '',
     }
-
+    componentDidMount () {
+        if (this.props.selectEvent !== null){
+            this.setState({
+                ...this.props.selectEvent
+            });
+        }
+    }
     formSubmitHandler = (evt) => {
         evt.preventDefault();
         this.props.creatNewEvent(this.state);
@@ -68,7 +74,7 @@ class CreateEvent extends Component {
                     <Button positive type="submit">
                         Submit
                       </Button>
-                    <Button type="button" onClick={this.props.toggleForm}>Cancel</Button>
+                    <Button type="button" onClick={this.props.cancelForm}>Cancel</Button>
                 </Form>
             </Segment>
         )

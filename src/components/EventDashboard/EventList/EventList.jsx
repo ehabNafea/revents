@@ -7,7 +7,7 @@ class EventList extends Component {
         return (
             <Auxiliary>
                 {this.props.events.map(event => (
-                    <EventListItem key={event.id} event={event}/>
+                    <EventListItem key={event.id} event={event} selectEvent={this.props.selectEvent}/>
                 ))}
             </Auxiliary>
 

@@ -9,7 +9,7 @@ const eventsFromDashboard = [
   {
     id: '1',
     title: 'Trip to Tower of London',
-    date: '2018-03-27T11:00:00+00:00',
+    date: '2018-03-27',
     category: 'culture',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -33,7 +33,7 @@ const eventsFromDashboard = [
   {
     id: '2',
     title: 'Trip to Punch and Judy Pub',
-    date: '2018-03-28T14:00:00+00:00',
+    date: '2018-03-28',
     category: 'drinks',
     description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sollicitudin ligula eu leo tincidunt, quis scelerisque magna dapibus. Sed eget ipsum vel arcu vehicula ullamcorper.',
@@ -60,14 +60,21 @@ const eventsFromDashboard = [
  class EventDashboard extends Component {
    state = {
      events: eventsFromDashboard,
-     isOpen: false
+     isOpen: false,
+     selectEvent: null
    }
 
-   toggleFormHandler = () => {
-     this.setState((prevState) => ({
-       isOpen: !prevState.isOpen
-     }))
+   openFormHandler = () => {
+     this.setState({
+       isOpen: true,
+       selectEvent: null
+     })
    }
+   cancelFormHandler = () => {
+    this.setState({
+      isOpen: false
+    })
+  }
 
    createNewEventHandler = (newEvent) => {
       newEvent.id = cuid();
@@ -76,18 +83,28 @@ const eventsFromDashboard = [
         events: [...eventsFromDashboard, newEvent],
         isOpen: false
       });
-      console.log(newEvent);
    }
-
+      selectEventHandler = (event) => {
+        this.setState({
+          selectEvent: event,
+          isOpen: true
+        });
+      }
     render() {
+      const {events, isOpen, selectEvent} = this.state;
         return (
             <Grid>
                 <Grid.Column width={10}>
-                    <EventList events={this.state.events} />
+                    <EventList events={events} selectEvent={this.selectEventHandler} />
                 </Grid.Column>
                 <Grid.Column width={6}>
-                <Button onClick={this.toggleFormHandler} positive inverted content="Create Event" />
-                  {this.state.isOpen ? <CreateEvent toggleForm={this.toggleFormHandler} creatNewEvent={this.createNewEventHandler} /> : null}    
+                <Button onClick={this.openFormHandler} positive inverted content="Create Event" />
+                  {isOpen ? 
+                  <CreateEvent 
+                      key={selectEvent ? selectEvent.id : 0}
+                      selectEvent={selectEvent}
+                      cancelForm={this.cancelFormHandler}  
+                      creatNewEvent={this.createNewEventHandler} /> : null}    
                 </Grid.Column>
             </Grid>
         )
