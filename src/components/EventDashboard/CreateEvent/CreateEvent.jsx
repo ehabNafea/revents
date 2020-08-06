@@ -18,7 +18,11 @@ class CreateEvent extends Component {
     }
     formSubmitHandler = (evt) => {
         evt.preventDefault();
-        this.props.creatNewEvent(this.state);
+        if(this.state.id){
+            this.props.updateEvent(this.state)
+        }else{
+            this.props.creatNewEvent(this.state);
+        }
     }
 
     inputChangeHandler = (evt) => {

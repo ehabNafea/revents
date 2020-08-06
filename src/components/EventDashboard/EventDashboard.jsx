@@ -57,58 +57,84 @@ const eventsFromDashboard = [
 ]
 
 
- class EventDashboard extends Component {
-   state = {
-     events: eventsFromDashboard,
-     isOpen: false,
-     selectEvent: null
-   }
+class EventDashboard extends Component {
+  state = {
+    events: eventsFromDashboard,
+    isOpen: false,
+    selectEvent: null
+  }
 
-   openFormHandler = () => {
-     this.setState({
-       isOpen: true,
-       selectEvent: null
-     })
-   }
-   cancelFormHandler = () => {
+  openFormHandler = () => {
+    this.setState({
+      isOpen: true,
+      selectEvent: null
+    })
+  }
+  cancelFormHandler = () => {
     this.setState({
       isOpen: false
     })
   }
 
-   createNewEventHandler = (newEvent) => {
-      newEvent.id = cuid();
-      newEvent.hostPhotoURL = 'assets/images/user.png';
-      this.setState({
-        events: [...eventsFromDashboard, newEvent],
-        isOpen: false
-      });
-   }
-      selectEventHandler = (event) => {
-        this.setState({
-          selectEvent: event,
-          isOpen: true
-        });
-      }
-    render() {
-      const {events, isOpen, selectEvent} = this.state;
-        return (
-            <Grid>
-                <Grid.Column width={10}>
-                    <EventList events={events} selectEvent={this.selectEventHandler} />
-                </Grid.Column>
-                <Grid.Column width={6}>
-                <Button onClick={this.openFormHandler} positive inverted content="Create Event" />
-                  {isOpen ? 
-                  <CreateEvent 
-                      key={selectEvent ? selectEvent.id : 0}
-                      selectEvent={selectEvent}
-                      cancelForm={this.cancelFormHandler}  
-                      creatNewEvent={this.createNewEventHandler} /> : null}    
-                </Grid.Column>
-            </Grid>
-        )
-    }
+  createNewEventHandler = (newEvent) => {
+    newEvent.id = cuid();
+    newEvent.hostPhotoURL = 'assets/images/user.png';
+    this.setState({
+      events: [...eventsFromDashboard, newEvent],
+      isOpen: false
+    });
+  }
+
+  selectEventHandler = (event) => {
+    this.setState({
+      selectEvent: event,
+      isOpen: true
+    });
+  }
+
+  updateEventHandler = (updateEvent) => {
+    this.setState(({events}) => ({
+      events: events.map(event => {
+        if (event.id === updateEvent.id) {
+          return updateEvent
+        }else {
+          return event
+        }
+      }),
+      isOpen: false,
+      selectEvent: null
+    }))
+  }
+
+  deleteEventHandler = (id) => {
+    this.setState(({events}) => ({
+      events: events.filter(event => event.id !== id)
+    }))
+  }
+
+  render() {
+    const { events, isOpen, selectEvent } = this.state;
+    return (
+      <Grid>
+        <Grid.Column width={10}>
+          <EventList 
+          deleteEvent={this.deleteEventHandler}
+          events={events} 
+          selectEvent={this.selectEventHandler} />
+        </Grid.Column>
+        <Grid.Column width={6}>
+          <Button onClick={this.openFormHandler} positive inverted content="Create Event" />
+          {isOpen ?
+            <CreateEvent
+            updateEvent={this.updateEventHandler}
+              key={selectEvent ? selectEvent.id : 0}
+              selectEvent={selectEvent}
+              cancelForm={this.cancelFormHandler}
+              creatNewEvent={this.createNewEventHandler} /> : null}
+        </Grid.Column>
+      </Grid>
+    )
+  }
 }
 
 export default EventDashboard;
